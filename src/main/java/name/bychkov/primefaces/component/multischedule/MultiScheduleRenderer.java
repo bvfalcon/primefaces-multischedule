@@ -10,9 +10,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -30,6 +33,7 @@ import name.bychkov.primefaces.model.MultiScheduleModel;
 
 @FacesRenderer(componentFamily = MultiSchedule.COMPONENT_FAMILY, rendererType = MultiSchedule.DEFAULT_RENDERER)
 public class MultiScheduleRenderer extends CoreRenderer {
+	private static final Logger LOGGER = Logger.getLogger(MultiScheduleRenderer.class.getName());
 
 	@Override
 	public void decode(FacesContext context, UIComponent component) {
@@ -128,6 +132,18 @@ public class MultiScheduleRenderer extends CoreRenderer {
 		return jsonEvents;
 	}
 
+	private String getLicenseKey(FacesContext context) {
+		String licenseKey = context.getExternalContext().getInitParameter(MultiSchedule.LICENSE_KEY);
+		try {
+			if (licenseKey != null) {
+				licenseKey = context.getApplication().evaluateExpressionGet(context, licenseKey, String.class);
+			}
+		} catch (ELException e) {
+			LOGGER.log(Level.FINE, e, () -> "Try to process context parameter " + MultiSchedule.LICENSE_KEY + " as EL-expression");
+		}
+		return licenseKey;
+	}
+
 	protected void encodeScript(FacesContext context, MultiSchedule multiSchedule) throws IOException {
 		String clientId = multiSchedule.getClientId(context);
 		WidgetBuilder wb = getWidgetBuilder(context);
@@ -141,7 +157,7 @@ public class MultiScheduleRenderer extends CoreRenderer {
 				//timeGrid offers an additional eventLimit - integer value; see https://fullcalendar.io/docs/eventLimit; not exposed yet by PF-schedule
 				.attr("lazyFetching", false);
 
-		String licenseKey = context.getExternalContext().getInitParameter(MultiSchedule.LICENSE_KEY);
+		String licenseKey = getLicenseKey(context);
 		if (licenseKey != null) {
 			wb.attr("schedulerLicenseKey", licenseKey);
 		} else {
