@@ -10,7 +10,6 @@ PrimeFaces.widget.MultiSchedule = PrimeFaces.widget.DeferredWidget.extend({
         this.viewNameState = $(this.jqId + '_view');
         this.cfg.urlTarget = this.cfg.urlTarget || "_blank";
         this.cfg.plugins = ['interaction', 'resourceDayGrid', 'resourceTimeGrid'];
-        this.cfg.schedulerLicenseKey = 'CC-Attribution-NonCommercial-NoDerivatives';
         
         this.setupEventSource();
 

@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -139,6 +140,14 @@ public class MultiScheduleRenderer extends CoreRenderer {
 				.attr("eventLimit", multiSchedule.getValue().isEventLimit(), false)
 				//timeGrid offers an additional eventLimit - integer value; see https://fullcalendar.io/docs/eventLimit; not exposed yet by PF-schedule
 				.attr("lazyFetching", false);
+
+		String licenseKey = context.getApplication().evaluateExpressionGet(context,
+				context.getExternalContext().getInitParameter(MultiSchedule.LICENSE_KEY), String.class);
+		if (licenseKey != null) {
+			wb.attr("schedulerLicenseKey", licenseKey);
+		} else {
+			throw new FacesException("Cannot find license key for multischedule, use " + MultiSchedule.LICENSE_KEY + " context-param to define one");
+		}
 		wb.append(",resources:").append(encodeKeys(context, multiSchedule.getValue()));
 
 		Object initialDate = multiSchedule.getInitialDate();

@@ -42,6 +42,7 @@ public class MultiSchedule extends UIComponentBase implements Widget, ClientBeha
 
 	public static final String COMPONENT_FAMILY = "org.primefaces.component";
 	public static final String DEFAULT_RENDERER = "name.bychkov.primefaces.component.multischedule.MultiScheduleRenderer";
+	public static final String LICENSE_KEY = "primefaces.SCHEDULE_LICENSE_KEY";
 
 	public enum PropertyKeys {
 
