@@ -206,7 +206,7 @@ public class MultiSchedule extends UIComponentBase implements Widget, ClientBeha
 	}
 
 	public String getRightHeaderTemplate() {
-		return (String) getStateHelper().eval(PropertyKeys.rightHeaderTemplate, "dayGridMonth,timeGridWeek,timeGridDay");
+		return (String) getStateHelper().eval(PropertyKeys.rightHeaderTemplate, "resourceTimeGridDay,resourceTimeGridWeek");
 	}
 
 	public void setRightHeaderTemplate(String rightHeaderTemplate) {
