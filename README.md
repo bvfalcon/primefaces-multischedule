@@ -3,7 +3,7 @@ Multischedule component for Primefaces 12 Jakarta
 
 ![Screenshot](/screenshot.png)
 
-**IMPORTANT**: Need to add license key into `web.xml`:
+**IMPORTANT**: Need to add [license key for FullCalendar](https://fullcalendar.io/license) into `web.xml`:
 
 ```xml
 	<context-param>
