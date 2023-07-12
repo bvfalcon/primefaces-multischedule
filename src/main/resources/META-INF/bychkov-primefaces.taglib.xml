@@ -345,5 +345,13 @@
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description>
+                <![CDATA[Resource view with dates above resources, default value is false.]]>
+            </description>
+            <name>datesAboveResources</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
 </facelet-taglib>

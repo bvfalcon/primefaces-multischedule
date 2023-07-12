@@ -133,6 +133,7 @@ public class MultiScheduleRenderer extends CoreRenderer {
 		
 		wb.init("MultiSchedule", multiSchedule.resolveWidgetVar(context), clientId)
 				.attr("defaultView", translateViewName(multiSchedule.getView().trim()))
+				.attr("datesAboveResources", multiSchedule.isDatesAboveResources(), false)
 				.attr("locale", multiSchedule.calculateLocale(context).toString().toLowerCase().replace("_", "-")) //adjust locale to FullCalendar-locale
 				.attr("tooltip", multiSchedule.isTooltip(), false)
 				.attr("eventLimit", multiSchedule.getValue().isEventLimit(), false)

@@ -81,7 +81,8 @@ public class MultiSchedule extends UIComponentBase implements Widget, ClientBeha
 		nextDayThreshold,
 		slotEventOverlap,
 		urlTarget,
-		noOpener
+		noOpener,
+		datesAboveResources
 	}
 
 	public MultiSchedule() {
@@ -387,6 +388,14 @@ public class MultiSchedule extends UIComponentBase implements Widget, ClientBeha
 
 	public void setNoOpener(boolean noOpener) {
 		getStateHelper().put(PropertyKeys.noOpener, noOpener);
+	}
+	
+	public boolean isDatesAboveResources() {
+		return (Boolean) getStateHelper().eval(PropertyKeys.datesAboveResources, false);
+	}
+
+	public void setDatesAboveResources(boolean datesAboveResources) {
+		getStateHelper().put(PropertyKeys.datesAboveResources, datesAboveResources);
 	}
 
 	public static final String COMPONENT_TYPE = MultiSchedule.class.getName();
