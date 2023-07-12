@@ -141,8 +141,7 @@ public class MultiScheduleRenderer extends CoreRenderer {
 				//timeGrid offers an additional eventLimit - integer value; see https://fullcalendar.io/docs/eventLimit; not exposed yet by PF-schedule
 				.attr("lazyFetching", false);
 
-		String licenseKey = context.getApplication().evaluateExpressionGet(context,
-				context.getExternalContext().getInitParameter(MultiSchedule.LICENSE_KEY), String.class);
+		String licenseKey = context.getExternalContext().getInitParameter(MultiSchedule.LICENSE_KEY);
 		if (licenseKey != null) {
 			wb.attr("schedulerLicenseKey", licenseKey);
 		} else {
