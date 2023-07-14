@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -30,7 +31,10 @@ import org.primefaces.model.ScheduleModel;
 import org.primefaces.shaded.json.JSONArray;
 import org.primefaces.shaded.json.JSONObject;
 import org.primefaces.util.CalendarUtils;
+import org.primefaces.util.ComponentUtils;
+import org.primefaces.util.EscapeUtils;
 import org.primefaces.util.LangUtils;
+import org.primefaces.util.LocaleUtils;
 import org.primefaces.util.WidgetBuilder;
 
 import name.bychkov.primefaces.model.MultiScheduleModel;
@@ -168,15 +172,32 @@ public class MultiScheduleRenderer extends ScheduleRenderer {
 	@Override
 	protected void encodeScript(FacesContext context, Schedule schedule) throws IOException {
 		MultiSchedule multiSchedule = (MultiSchedule) schedule;
+		Locale locale = multiSchedule.calculateLocale(context);
 		WidgetBuilder wb = getWidgetBuilder(context);
 		
 		wb.init("MultiSchedule", multiSchedule)
-				.attr("defaultView", translateViewName(multiSchedule.getView().trim()))
-				.attr("locale", multiSchedule.calculateLocale(context).toString().toLowerCase().replace("_", "-")) //adjust locale to FullCalendar-locale
-				.attr("tooltip", multiSchedule.isTooltip(), false)
-				.attr("eventLimit", multiSchedule.getValue().isEventLimit(), false)
-				//timeGrid offers an additional eventLimit - integer value; see https://fullcalendar.io/docs/eventLimit; not exposed yet by PF-schedule
-				.attr("lazyFetching", false);
+				.attr("urlTarget", schedule.getUrlTarget(), "_blank")
+				.attr("noOpener", schedule.isNoOpener(), true)
+				.attr("locale", locale.toString())
+				.attr("tooltip", schedule.isTooltip(), false);
+
+		String columnFormat = schedule.getColumnHeaderFormat() != null ? schedule.getColumnHeaderFormat() : schedule.getColumnFormat();
+		if (columnFormat != null) {
+			wb.append(",columnFormatOptions:{" + columnFormat + "}");
+		}
+
+		String extender = schedule.getExtender();
+		if (extender != null) {
+			wb.nativeAttr("extender", extender);
+		}
+
+		wb.append(",options:{");
+		wb.append("locale:\"").append(LocaleUtils.toJavascriptLocale(locale)).append("\",");
+		wb.append("initialView:\"").append(EscapeUtils.forJavaScript(translateViewName(schedule.getView().trim()))).append("\"");
+		wb.attr("dayMaxEventRows", schedule.getValue().isEventLimit(), false);
+
+		//timeGrid offers an additional eventLimit - integer value; see https://fullcalendar.io/docs/v5/dayMaxEventRows; not exposed yet by PF-schedule
+		wb.attr("lazyFetching", false);
 
 		String licenseKey = getLicenseKey(context);
 		if (licenseKey != null) {
@@ -197,52 +218,54 @@ public class MultiScheduleRenderer extends ScheduleRenderer {
 		}
 		wb.append(",resources:").append(encodeKeys(context, multiSchedule));
 
-		Object initialDate = multiSchedule.getInitialDate();
+		Object initialDate = schedule.getInitialDate();
 		if (initialDate != null) {
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_DATE;
-			wb.attr("defaultDate", ((LocalDate) initialDate).format(dateTimeFormatter), null);
-
+			wb.attr("initialDate", ((LocalDate) initialDate).format(dateTimeFormatter), null);
 		}
 
-		if (multiSchedule.isShowHeader()) {
-			wb.append(",header:{left:'")
-					.append(multiSchedule.getLeftHeaderTemplate()).append("'")
-					.attr("center", multiSchedule.getCenterHeaderTemplate())
-					.attr("right", translateViewNames(multiSchedule.getRightHeaderTemplate()))
+		if (schedule.isShowHeader()) {
+			wb.append(",headerToolbar:{start:'")
+					.append(schedule.getLeftHeaderTemplate()).append("'")
+					.attr("center", schedule.getCenterHeaderTemplate())
+					.attr("end", translateViewNames(schedule.getRightHeaderTemplate()))
 					.append("}");
 		}
 		else {
-			wb.attr("header", false);
+			wb.attr("headerToolbar", false);
 		}
 
-		boolean isShowWeekNumbers = multiSchedule.isShowWeekNumbers();
+		if (ComponentUtils.isRTL(context, schedule)) {
+			wb.attr("direction", "rtl");
+		}
 
-		wb.attr("allDaySlot", multiSchedule.isAllDaySlot(), true)
-				.attr("slotDuration", multiSchedule.getSlotDuration(), "00:30:00")
-				.attr("scrollTime", multiSchedule.getScrollTime(), "06:00:00")
-				.attr("timeZone", multiSchedule.getClientTimeZone(), "local")
-				.attr("minTime", multiSchedule.getMinTime(), null)
-				.attr("maxTime", multiSchedule.getMaxTime(), null)
-				.attr("aspectRatio", multiSchedule.getAspectRatio(), Double.MIN_VALUE)
-				.attr("weekends", multiSchedule.isShowWeekends(), true)
-				.attr("eventStartEditable", multiSchedule.isDraggable(), true)
-				.attr("eventDurationEditable", multiSchedule.isResizable(), true)
-				.attr("slotLabelInterval", multiSchedule.getSlotLabelInterval(), null)
-				.attr("eventTimeFormat", multiSchedule.getTimeFormat(), null) //https://momentjs.com/docs/#/displaying/
+		boolean isShowWeekNumbers = schedule.isShowWeekNumbers();
+
+		wb.attr("allDaySlot", schedule.isAllDaySlot(), true)
+				.attr("height", schedule.getHeight(), null)
+				.attr("slotDuration", schedule.getSlotDuration(), "00:30:00")
+				.attr("scrollTime", schedule.getScrollTime(), "06:00:00")
+				.attr("timeZone", schedule.getClientTimeZone(), "local")
+				.attr("slotMinTime", schedule.getMinTime(), null)
+				.attr("slotMaxTime", schedule.getMaxTime(), null)
+				.attr("aspectRatio", schedule.getAspectRatio(), Double.MIN_VALUE)
+				.attr("weekends", schedule.isShowWeekends(), true)
+				.attr("eventStartEditable", schedule.isDraggable())
+				.attr("eventDurationEditable", schedule.isResizable())
+				.attr("selectable", schedule.isSelectable(), false)
+				.attr("slotLabelInterval", schedule.getSlotLabelInterval(), null)
+				.attr("eventTimeFormat", schedule.getTimeFormat(), null) //https://momentjs.com/docs/#/displaying/
 				.attr("weekNumbers", isShowWeekNumbers, false)
-				.attr("nextDayThreshold", multiSchedule.getNextDayThreshold(), "09:00:00")
-				.attr("slotEventOverlap", multiSchedule.isSlotEventOverlap(), true)
-				.attr("urlTarget", multiSchedule.getUrlTarget(), "_blank")
-				.attr("noOpener", multiSchedule.isNoOpener(), true);
+				.attr("nextDayThreshold", schedule.getNextDayThreshold(), "09:00:00")
+				.attr("slotEventOverlap", schedule.isSlotEventOverlap(), true);
 
-		String columnFormat = multiSchedule.getColumnHeaderFormat() != null ? multiSchedule.getColumnHeaderFormat() : multiSchedule.getColumnFormat();
-		if (columnFormat != null) {
-			wb.append(",columnFormatOptions:{" + columnFormat + "}");
+		if (LangUtils.isNotBlank(schedule.getSlotLabelFormat())) {
+			wb.nativeAttr("slotLabelFormat", schedule.getSlotLabelFormat());
 		}
 
-		String displayEventEnd = multiSchedule.getDisplayEventEnd();
+		String displayEventEnd = schedule.getDisplayEventEnd();
 		if (displayEventEnd != null) {
-			if (displayEventEnd.equals("true") || displayEventEnd.equals("false")) {
+			if ("true".equals(displayEventEnd) || "false".equals(displayEventEnd)) {
 				wb.nativeAttr("displayEventEnd", displayEventEnd);
 			}
 			else {
@@ -250,19 +273,14 @@ public class MultiScheduleRenderer extends ScheduleRenderer {
 			}
 		}
 
-		String extender = multiSchedule.getExtender();
-		if (extender != null) {
-			wb.nativeAttr("extender", extender);
-		}
-
 		if (isShowWeekNumbers) {
-			String weekNumCalculation = multiSchedule.getWeekNumberCalculation();
-			String weekNumCalculator = multiSchedule.getWeekNumberCalculator();
+			String weekNumCalculation = schedule.getWeekNumberCalculation();
+			String weekNumCalculator = schedule.getWeekNumberCalculator();
 
-			if (weekNumCalculation.equals("custom")) {
+			if ("custom".equals(weekNumCalculation)) {
 				if (weekNumCalculator != null) {
-					wb.append(",weekNumberCalculation: function(){ return ")
-							.append(multiSchedule.getWeekNumberCalculator())
+					wb.append(",weekNumberCalculation: function(date){ return ")
+							.append(schedule.getWeekNumberCalculator())
 							.append("}");
 				}
 			}
@@ -271,7 +289,9 @@ public class MultiScheduleRenderer extends ScheduleRenderer {
 			}
 		}
 
-		encodeClientBehaviors(context, multiSchedule);
+		wb.append("}");
+
+		encodeClientBehaviors(context, schedule);
 
 		wb.finish();
 	}

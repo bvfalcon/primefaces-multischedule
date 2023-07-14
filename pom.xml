@@ -58,97 +58,24 @@
 								<aggregation>
 									<insertNewLine>true</insertNewLine>
 									<removeIncluded>true</removeIncluded>
-									<inputDir>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule</inputDir>
+									<inputDir>${project.build.directory}</inputDir>
 									<output>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/multischedule.js</output>
 									<includes>
-										<include>fullcalendar-core.js</include>
-										<include>fullcalendar-locales-all.js</include>
-										<include>fullcalendar-interaction.js</include>
-										<include>fullcalendar-daygrid.js</include>
-										<include>fullcalendar-timegrid.js</include>
-										<include>fullcalendar-timeline.js</include>
-										<include>fullcalendar-list.js</include>
-										<include>fullcalendar-moment.js</include>
-										<include>fullcalendar-moment-timezone.js</include>
-										<include>fullcalendar-resource-common.js</include>
-										<include>fullcalendar-resource-daygrid.js</include>
-										<include>fullcalendar-resource-timegrid.js</include>
-										<include>fullcalendar-resource-timeline.js</include>
-										<include>1-multischedule.js</include>
+										<include>classes/META-INF/resources/primefaces/multischedule/1-multischedule.js</include>
+										<include>fullcalendar.min.js</include>
 									</includes>
 								</aggregation>
 								<aggregation>
 									<insertNewLine>true</insertNewLine>
 									<removeIncluded>true</removeIncluded>
 									<output>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/multischedule.css</output>
-									<inputDir>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule</inputDir>
+									<inputDir>${project.build.directory}</inputDir>
 									<includes>
-										<include>fullcalendar-core.css</include>
-										<include>fullcalendar-daygrid.css</include>
-										<include>fullcalendar-timegrid.css</include>
-										<include>fullcalendar-timeline.css</include>
-										<include>fullcalendar-resource-timeline.css</include>
-										<include>fullcalendar-list.css</include>
+										<include>fullcalendar.min.css</include>
 									</includes>
 								</aggregation>
 							</aggregations>
 						</configuration>
-					</plugin>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>${maven-antrun-plugin.version}</version>
-						<executions>
-							<execution>
-								<id>copy-fullcalendar-resources</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/core/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-core.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/core/locales-all.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-locales-all.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/interaction/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-interaction.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/daygrid/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-daygrid.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/timegrid/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-timegrid.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/timeline/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-timeline.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/list/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-list.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/moment/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-moment.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/moment-timezone/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-moment-timezone.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-common/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-common.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-daygrid/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-daygrid.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-timegrid/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-timegrid.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-timeline/main.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-timeline.js" />
-
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/core/main.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-core.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/daygrid/main.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-daygrid.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/timegrid/main.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-timegrid.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/timeline/main.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-timeline.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-timeline/main.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-timeline.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/list/main.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-list.css" />
-									</target>
-								</configuration>
-							</execution>
-						</executions>
 					</plugin>
 				</plugins>
 			</build>
@@ -184,97 +111,24 @@
 								<aggregation>
 									<insertNewLine>true</insertNewLine>
 									<removeIncluded>true</removeIncluded>
-									<inputDir>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule</inputDir>
+									<inputDir>${project.build.directory}</inputDir>
 									<output>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/multischedule.js</output>
 									<includes>
-										<include>fullcalendar-core.min.js</include>
-										<include>fullcalendar-locales-all.min.js</include>
-										<include>fullcalendar-interaction.min.js</include>
-										<include>fullcalendar-daygrid.min.js</include>
-										<include>fullcalendar-timegrid.min.js</include>
-										<include>fullcalendar-timeline.min.js</include>
-										<include>fullcalendar-list.min.js</include>
-										<include>fullcalendar-moment.min.js</include>
-										<include>fullcalendar-moment-timezone.min.js</include>
-										<include>fullcalendar-resource-common.min.js</include>
-										<include>fullcalendar-resource-daygrid.min.js</include>
-										<include>fullcalendar-resource-timegrid.min.js</include>
-										<include>fullcalendar-resource-timeline.min.js</include>
-										<include>1-multischedule.js</include>
+										<include>classes/META-INF/resources/primefaces/multischedule/1-multischedule.js</include>
+										<include>fullcalendar.min.js</include>
 									</includes>
 								</aggregation>
 								<aggregation>
 									<insertNewLine>true</insertNewLine>
 									<removeIncluded>true</removeIncluded>
-									<inputDir>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule</inputDir>
 									<output>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/multischedule.css</output>
+									<inputDir>${project.build.directory}</inputDir>
 									<includes>
-										<include>fullcalendar-core.min.css</include>
-										<include>fullcalendar-daygrid.min.css</include>
-										<include>fullcalendar-timegrid.min.css</include>
-										<include>fullcalendar-timeline.min.css</include>
-										<include>fullcalendar-resource-timeline.min.css</include>
-										<include>fullcalendar-list.min.css</include>
+										<include>fullcalendar.min.css</include>
 									</includes>
 								</aggregation>
 							</aggregations>
 						</configuration>
-					</plugin>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>${maven-antrun-plugin.version}</version>
-						<executions>
-							<execution>
-								<id>copy-fullcalendar-resources</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/core/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-core.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/core/locales-all.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-locales-all.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/interaction/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-interaction.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/daygrid/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-daygrid.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/timegrid/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-timegrid.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/timeline/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-timeline.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/list/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-list.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/moment/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-moment.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/moment-timezone/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-moment-timezone.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-common/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-common.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-daygrid/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-daygrid.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-timegrid/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-timegrid.min.js" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-timeline/main.min.js"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-timeline.min.js" />
-
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/core/main.min.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-core.min.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/daygrid/main.min.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-daygrid.min.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/timegrid/main.min.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-timegrid.min.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/timeline/main.min.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-timeline.min.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/resource-timeline/main.min.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-resource-timeline.min.css" />
-										<copy file="${project.build.directory}/npm-config/node_modules/@fullcalendar/list/main.min.css"
-											tofile="${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/fullcalendar-list.min.css" />
-									</target>
-								</configuration>
-							</execution>
-						</executions>
 					</plugin>
 				</plugins>
 			</build>
@@ -296,8 +150,9 @@
 						</goals>
 						<configuration>
 							<target>
-								<copy file="${basedir}/src/main/npm-config/package.json"
-									tofile="${project.build.directory}/npm-config/package.json" />
+								<copy todir="${project.build.directory}/npm-config">
+									<fileset dir="${basedir}/src/main/npm-config"/>
+								</copy>
 							</target>
 						</configuration>
 					</execution>
@@ -336,6 +191,16 @@
 						<phase>initialize</phase>
 						<configuration>
 							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm run build</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>initialize</phase>
+						<configuration>
+							<arguments>run build</arguments>
 						</configuration>
 					</execution>
 				</executions>
