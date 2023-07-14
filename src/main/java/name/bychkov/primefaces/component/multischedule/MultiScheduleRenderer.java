@@ -213,8 +213,11 @@ public class MultiScheduleRenderer extends ScheduleRenderer {
 			wb.attr("resourceLabelText", multiSchedule.getResourceLabelText());
 		}
 		wb.attr("resourcesInitiallyExpanded", multiSchedule.isResourcesInitiallyExpanded());
-		if (multiSchedule.getSlotWidth() != null) {
-			wb.attr("slotWidth", multiSchedule.getSlotWidth());
+		if (multiSchedule.getSlotMinWidth() != null) {
+			wb.attr("slotMinWidth", multiSchedule.getSlotMinWidth());
+		}
+		if (multiSchedule.getEventMinWidth() != null) {
+			wb.attr("eventMinWidth", multiSchedule.getEventMinWidth());
 		}
 		wb.append(",resources:").append(encodeKeys(context, multiSchedule));
 

@@ -399,7 +399,15 @@
             <description>
                 <![CDATA[Determines how wide each of the time-axis slots will be. Specified as a number of pixels. When not specified, a reasonable value will be automatically computed.]]>
             </description>
-            <name>slotWidth</name>
+            <name>slotMinWidth</name>
+            <required>false</required>
+            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[Determines the minimum width an event is allowed to be. Default value is 30.]]>
+            </description>
+            <name>eventMinWidth</name>
             <required>false</required>
             <type>java.lang.Integer</type>
         </attribute>

@@ -28,7 +28,8 @@ public class MultiSchedule extends Schedule {
 		resourceAreaWidth,
 		resourceLabelText,
 		resourcesInitiallyExpanded,
-		slotWidth
+		slotMinWidth,
+		eventMinWidth
 	}
 
 	public MultiSchedule() {
@@ -88,12 +89,20 @@ public class MultiSchedule extends Schedule {
 		getStateHelper().put(OwnPropertyKeys.resourcesInitiallyExpanded, resourcesInitiallyExpanded);
 	}
 
-	public Integer getSlotWidth() {
-		return (Integer) getStateHelper().eval(OwnPropertyKeys.slotWidth);
+	public Integer getSlotMinWidth() {
+		return (Integer) getStateHelper().eval(OwnPropertyKeys.slotMinWidth);
 	}
 
-	public void setSlotWidth(Integer slotWidth) {
-		getStateHelper().put(OwnPropertyKeys.slotWidth, slotWidth);
+	public void setSlotMinWidth(Integer slotMinWidth) {
+		getStateHelper().put(OwnPropertyKeys.slotMinWidth, slotMinWidth);
+	}
+
+	public Integer getEventMinWidth() {
+		return (Integer) getStateHelper().eval(OwnPropertyKeys.eventMinWidth, 30);
+	}
+
+	public void setEventMinWidth(Integer eventMinWidth) {
+		getStateHelper().put(OwnPropertyKeys.eventMinWidth, eventMinWidth);
 	}
 
 	Locale calculateLocale(FacesContext facesContext) {
