@@ -4,25 +4,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.primefaces.model.ScheduleEvent;
+import org.primefaces.model.ScheduleModel;
 
-public interface MultiScheduleModel {
+public interface MultiScheduleModel extends ScheduleModel {
 	Set<Object> getKeys();
+
 	void addEvent(Object key, ScheduleEvent<?> event);
 
-	boolean deleteEvent(ScheduleEvent<?> event);
-
-	List<ScheduleEvent<?>> getEvents();
 	List<ScheduleEvent<?>> getEvents(Object key);
 
-	ScheduleEvent<?> getEvent(String id);
-
-	void updateEvent(ScheduleEvent<?> event);
-
-	int getEventCount();
 	int getEventCount(Object key);
 
-	void clear();
 	void clear(Object key);
-
-	boolean isEventLimit();
 }

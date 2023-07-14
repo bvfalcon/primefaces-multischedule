@@ -1,6 +1,5 @@
 package name.bychkov.primefaces.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,10 +7,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 
-public class DefaultMultiScheduleModel implements MultiScheduleModel, Serializable {
-	private static final long serialVersionUID = -7164411821077003613L;
+public class DefaultMultiScheduleModel extends DefaultScheduleModel implements MultiScheduleModel {
+	private static final long serialVersionUID = -7164411821077003614L;
 
 	private Map<Object, List<ScheduleEvent<?>>> events;
 	private boolean eventLimit = false;

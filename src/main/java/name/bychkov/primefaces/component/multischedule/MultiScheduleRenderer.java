@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -18,59 +19,28 @@ import java.util.stream.Stream;
 
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.FacesRenderer;
 
+import org.primefaces.component.schedule.Schedule;
+import org.primefaces.component.schedule.ScheduleRenderer;
 import org.primefaces.model.ScheduleEvent;
-import org.primefaces.renderkit.CoreRenderer;
+import org.primefaces.model.ScheduleModel;
 import org.primefaces.shaded.json.JSONArray;
 import org.primefaces.shaded.json.JSONObject;
 import org.primefaces.util.CalendarUtils;
+import org.primefaces.util.LangUtils;
 import org.primefaces.util.WidgetBuilder;
 
 import name.bychkov.primefaces.model.MultiScheduleModel;
 
 @FacesRenderer(componentFamily = MultiSchedule.COMPONENT_FAMILY, rendererType = MultiSchedule.DEFAULT_RENDERER)
-public class MultiScheduleRenderer extends CoreRenderer {
+public class MultiScheduleRenderer extends ScheduleRenderer {
 	private static final Logger LOGGER = Logger.getLogger(MultiScheduleRenderer.class.getName());
 
-	@Override
-	public void decode(FacesContext context, UIComponent component) {
-		MultiSchedule multiSchedule = (MultiSchedule) component;
-		String clientId = multiSchedule.getClientId(context);
-		String viewId = clientId + "_view";
-		Map<String, String> params = context.getExternalContext().getRequestParameterMap();
-
-		if (params.containsKey(viewId)) {
-			multiSchedule.setView(params.get(viewId));
-		}
-
-		decodeBehaviors(context, component);
-	}
-
-	@Override
-	public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-		MultiSchedule multiSchedule = (MultiSchedule) component;
-
-		if (context.getExternalContext().getRequestParameterMap().containsKey(multiSchedule.getClientId(context))) {
-			JSONArray jsonEvents = encodeEvents(context, multiSchedule, multiSchedule.getValue());
-			
-			JSONObject jsonResponse = new JSONObject();
-			jsonResponse.put("events", jsonEvents);
-			
-			ResponseWriter writer = context.getResponseWriter();
-			writer.write(jsonResponse.toString());
-		}
-		else {
-			encodeMarkup(context, multiSchedule);
-			encodeScript(context, multiSchedule);
-		}
-	}
-
-	protected String encodeKeys(FacesContext context, MultiSchedule multiSchedule) throws IOException {
-		MultiScheduleModel model = multiSchedule.getValue();
+	private String encodeKeys(FacesContext context, MultiSchedule multiSchedule) throws IOException {
+		MultiScheduleModel model = (MultiScheduleModel) multiSchedule.getValue();
 		String resourceGroupField = multiSchedule.getResourceGroupField();
 		StringBuilder jsonResources = new StringBuilder();
 		if (model != null) {
@@ -102,33 +72,62 @@ public class MultiScheduleRenderer extends CoreRenderer {
 		return new StringBuilder("[").append(jsonResources).append("]").toString();
 	}
 	
-	protected JSONArray encodeEvents(FacesContext context, MultiSchedule multiSchedule, MultiScheduleModel model) throws IOException {
+	@Override
+	protected void encodeEventsAsJSON(FacesContext context, Schedule schedule, ScheduleModel model) throws IOException {
+		MultiSchedule multiSchedule = (MultiSchedule) schedule;
+		MultiScheduleModel multiModel = (MultiScheduleModel) model;
 		ZoneId zoneId = CalendarUtils.calculateZoneId(multiSchedule.getTimeZone());
 
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(zoneId);
 
 		JSONArray jsonEvents = new JSONArray();
 
-		if (model != null) {
-			Set<Object> resources = model.getKeys();
+		if (multiModel != null) {
+			Set<Object> resources = multiModel.getKeys();
 			for (Object resource : resources) {
-				List<ScheduleEvent<?>> events = model.getEvents(resource);
+				List<ScheduleEvent<?>> events = multiModel.getEvents(resource);
 				for (ScheduleEvent<?> event : events) {
 					JSONObject jsonObject = new JSONObject();
 	
 					jsonObject.put("id", event.getId());
-					if (event.getGroupId() != null && event.getGroupId().length() > 0) {
+					if (LangUtils.isNotBlank(event.getGroupId())) {
 						jsonObject.put("groupId", event.getGroupId());
 					}
 					jsonObject.put("title", event.getTitle());
 					jsonObject.put("start", dateTimeFormatter.format(event.getStartDate().atZone(zoneId)));
-					jsonObject.put("end", dateTimeFormatter.format(event.getEndDate().atZone(zoneId)));
+					if (event.getEndDate() != null) {
+						jsonObject.put("end", dateTimeFormatter.format(event.getEndDate().atZone(zoneId)));
+					}
 					jsonObject.put("allDay", event.isAllDay());
-					jsonObject.put("editable", event.isEditable());
+					if (event.isDraggable() != null) {
+						jsonObject.put("startEditable", event.isDraggable());
+					}
+					if (event.isResizable() != null) {
+						jsonObject.put("durationEditable", event.isResizable());
+					}
 					jsonObject.put("overlap", event.isOverlapAllowed());
-					jsonObject.put("className", event.getStyleClass());
-					jsonObject.put("description", event.getDescription());
-					jsonObject.put("url", event.getUrl());
+					if (event.getStyleClass() != null) {
+						jsonObject.put("classNames", event.getStyleClass());
+					}
+					if (event.getDescription() != null) {
+						jsonObject.put("description", event.getDescription());
+					}
+					if (event.getUrl() != null) {
+						jsonObject.put("url", event.getUrl());
+					}
+					if (event.getDisplay() != null) {
+						jsonObject.put("display", Objects.toString(event.getDisplay(), null));
+					}
+					if (event.getBackgroundColor() != null) {
+						jsonObject.put("backgroundColor", event.getBackgroundColor());
+					}
+					if (event.getBorderColor() != null) {
+						jsonObject.put("borderColor", event.getBorderColor());
+					}
+					if (event.getTextColor() != null) {
+						jsonObject.put("textColor", event.getTextColor());
+					}
+
 					jsonObject.put("resourceId", resource);
 	
 					if (event.getDynamicProperties() != null) {
@@ -147,7 +146,11 @@ public class MultiScheduleRenderer extends CoreRenderer {
 			}
 		}
 
-		return jsonEvents;
+		JSONObject jsonResponse = new JSONObject();
+		jsonResponse.put("events", jsonEvents);
+
+		ResponseWriter writer = context.getResponseWriter();
+		writer.write(jsonResponse.toString());
 	}
 
 	private String getLicenseKey(FacesContext context) {
@@ -162,7 +165,9 @@ public class MultiScheduleRenderer extends CoreRenderer {
 		return licenseKey;
 	}
 
-	protected void encodeScript(FacesContext context, MultiSchedule multiSchedule) throws IOException {
+	@Override
+	protected void encodeScript(FacesContext context, Schedule schedule) throws IOException {
+		MultiSchedule multiSchedule = (MultiSchedule) schedule;
 		WidgetBuilder wb = getWidgetBuilder(context);
 		
 		wb.init("MultiSchedule", multiSchedule)
@@ -269,50 +274,6 @@ public class MultiScheduleRenderer extends CoreRenderer {
 		encodeClientBehaviors(context, multiSchedule);
 
 		wb.finish();
-	}
-
-	protected void encodeMarkup(FacesContext context, MultiSchedule multiSchedule) throws IOException {
-		ResponseWriter writer = context.getResponseWriter();
-		String clientId = multiSchedule.getClientId(context);
-
-		writer.startElement("div", null);
-		writer.writeAttribute("id", clientId, null);
-		if (multiSchedule.getStyle() != null) {
-			writer.writeAttribute("style", multiSchedule.getStyle(), "style");
-		}
-		if (multiSchedule.getStyleClass() != null) {
-			writer.writeAttribute("class", multiSchedule.getStyleClass(), "style");
-		}
-
-		encodeStateParam(context, multiSchedule);
-
-		writer.endElement("div");
-	}
-
-	@Override
-	public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-		//Do nothing
-	}
-
-	@Override
-	public boolean getRendersChildren() {
-		return true;
-	}
-
-	protected void encodeStateParam(FacesContext context, MultiSchedule multiSchedule) throws IOException {
-		ResponseWriter writer = context.getResponseWriter();
-		String id = multiSchedule.getClientId(context) + "_view";
-		String view = multiSchedule.getView();
-
-		writer.startElement("input", null);
-		writer.writeAttribute("type", "hidden", null);
-		writer.writeAttribute("id", id, null);
-		writer.writeAttribute("name", id, null);
-		writer.writeAttribute("autocomplete", "off", null);
-		if (view != null) {
-			writer.writeAttribute("value", view, null);
-		}
-		writer.endElement("input");
 	}
 
 	/**

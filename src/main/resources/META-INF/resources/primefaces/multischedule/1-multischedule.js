@@ -154,6 +154,7 @@ PrimeFaces.widget.MultiSchedule = PrimeFaces.widget.DeferredWidget.extend({
                 update: $this.id,
                 formId: $this.cfg.formId,
                 params: [
+                    {name: $this.id + '_event', value: true},
                     {name: $this.id + '_start', value: fetchInfo.start.toISOString()},
                     {name: $this.id + '_end', value: fetchInfo.end.toISOString()}
                 ],
