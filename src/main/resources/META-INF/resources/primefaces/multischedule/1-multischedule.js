@@ -9,7 +9,7 @@ PrimeFaces.widget.MultiSchedule = PrimeFaces.widget.DeferredWidget.extend({
         this.cfg.theme = true;
         this.viewNameState = $(this.jqId + '_view');
         this.cfg.urlTarget = this.cfg.urlTarget || "_blank";
-        this.cfg.plugins = ['interaction', 'resourceDayGrid', 'resourceTimeGrid'];
+        this.cfg.plugins = ['interaction', 'resourceDayGrid', 'resourceTimeGrid', 'resourceTimeline'];
         
         this.setupEventSource();
 
@@ -219,7 +219,15 @@ PrimeFaces.widget.MultiSchedule = PrimeFaces.widget.DeferredWidget.extend({
             timeGridDay: {},
             listYear: {},
             listMonth: {},
-            listDay: {}
+            listDay: {},
+            resourceTimeGridDay: {},
+            resourceTimeGrid: {},
+            resourceTimeGridWeek: {},
+            resourceTimeline: {},
+            resourceTimelineDay:{},
+            resourceTimelineWeek: {},
+            resourceTimelineMonth: {},
+            resourceTimelineYear: {}
         };
 
         var columnFormat = this.cfg.columnFormatOptions;

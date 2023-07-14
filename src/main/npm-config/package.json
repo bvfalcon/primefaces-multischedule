@@ -10,6 +10,7 @@
     "@fullcalendar/resource-common": "^4.4.2",
     "@fullcalendar/resource-timegrid": "^4.4.2",
     "@fullcalendar/resource-daygrid": "^4.4.2",
+    "@fullcalendar/resource-timeline": "^4.4.2",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.34"
   }

@@ -49,11 +49,6 @@ public class DefaultMultiScheduleModel implements MultiScheduleModel, Serializab
 	}
 	
 	@Override
-	public boolean deleteEvent(Object key, ScheduleEvent<?> event) {
-		return events.get(key).remove(event);
-	}
-
-	@Override
 	public List<ScheduleEvent<?>> getEvents() {
 		var result = new ArrayList<ScheduleEvent<?>>();
 		for (var lEvents : events.values()) {
@@ -71,26 +66,14 @@ public class DefaultMultiScheduleModel implements MultiScheduleModel, Serializab
 	public ScheduleEvent<?> getEvent(String id) {
 		for (var lEvents : events.values()) {
 			for (var event : lEvents) {
-				if (event.getId().equals(id)) {
+				if (event.getId() != null && event.getId().equals(id)) {
 					return event;
 				}
 			}
 		}
-
 		return null;
 	}
 	
-	@Override
-	public ScheduleEvent<?> getEvent(Object key, String id) {
-		for (ScheduleEvent<?> event : events.get(key)) {
-			if (event.getId().equals(id)) {
-				return event;
-			}
-		}
-		
-		return null;
-	}
-
 	@Override
 	public void updateEvent(ScheduleEvent<?> event) {
 		Object key = null;
@@ -112,24 +95,6 @@ public class DefaultMultiScheduleModel implements MultiScheduleModel, Serializab
 		}
 	}
 	
-	@Override
-	public void updateEvent(Object key, ScheduleEvent<?> event) {
-		int index = -1;
-
-		var lEvents = events.get(key);
-		for (int i = 0; i < lEvents.size(); i++) {
-			if (lEvents.get(i).getId().equals(event.getId())) {
-				index = i;
-
-				break;
-			}
-		}
-
-		if (index >= 0) {
-			lEvents.set(index, event);
-		}
-	}
-
 	@Override
 	public int getEventCount() {
 		var count = 0;

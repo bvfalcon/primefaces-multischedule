@@ -1,6 +1,7 @@
 package name.bychkov.primefaces.component.multischedule;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -68,16 +69,33 @@ public class MultiScheduleRenderer extends CoreRenderer {
 		}
 	}
 
-	protected String encodeKeys(FacesContext context, MultiScheduleModel model) throws IOException {
+	protected String encodeKeys(FacesContext context, MultiSchedule multiSchedule) throws IOException {
+		MultiScheduleModel model = multiSchedule.getValue();
+		String resourceGroupField = multiSchedule.getResourceGroupField();
 		StringBuilder jsonResources = new StringBuilder();
-		
 		if (model != null) {
 			SortedSet<Object> keys = new TreeSet<>(model.getKeys());
 			for (Object key : keys) {
 				if (jsonResources.length() != 0) {
 					jsonResources.append(",");
 				}
-				jsonResources.append("{id: '").append(key.toString()).append("', title: '").append(key.toString()).append("'}");
+				Object resourceGroupFieldValue = null;
+				if (resourceGroupField != null) {
+					try {
+						Field field = key.getClass().getDeclaredField(resourceGroupField);
+						field.setAccessible(true);
+						resourceGroupFieldValue = field.get(key);
+					}
+					catch (NoSuchFieldException | SecurityException e) {
+						LOGGER.warning(() -> "Error has acquired while getting field " + resourceGroupField + " of class " + key.getClass().getName());
+					}
+					catch (IllegalArgumentException | IllegalAccessException e) {
+						LOGGER.warning(() -> "Error has acquired while getting field value " + resourceGroupField + " of object " + key.toString());
+					}
+				}
+				jsonResources.append("{id: '").append(key.toString()).append("', title: '").append(key.toString())
+					.append(resourceGroupFieldValue != null ? "', " + resourceGroupField + ": '" : "").append(resourceGroupFieldValue != null ? resourceGroupFieldValue.toString() : "")
+					.append("'}");
 			}
 		}
 		
@@ -145,12 +163,10 @@ public class MultiScheduleRenderer extends CoreRenderer {
 	}
 
 	protected void encodeScript(FacesContext context, MultiSchedule multiSchedule) throws IOException {
-		String clientId = multiSchedule.getClientId(context);
 		WidgetBuilder wb = getWidgetBuilder(context);
 		
-		wb.init("MultiSchedule", multiSchedule.resolveWidgetVar(context), clientId)
+		wb.init("MultiSchedule", multiSchedule)
 				.attr("defaultView", translateViewName(multiSchedule.getView().trim()))
-				.attr("datesAboveResources", multiSchedule.isDatesAboveResources(), false)
 				.attr("locale", multiSchedule.calculateLocale(context).toString().toLowerCase().replace("_", "-")) //adjust locale to FullCalendar-locale
 				.attr("tooltip", multiSchedule.isTooltip(), false)
 				.attr("eventLimit", multiSchedule.getValue().isEventLimit(), false)
@@ -163,7 +179,18 @@ public class MultiScheduleRenderer extends CoreRenderer {
 		} else {
 			throw new FacesException("Cannot find license key for multischedule, use " + MultiSchedule.LICENSE_KEY + " context-param to define one");
 		}
-		wb.append(",resources:").append(encodeKeys(context, multiSchedule.getValue()));
+		wb.attr("datesAboveResources", multiSchedule.isDatesAboveResources(), false);
+		if (multiSchedule.getResourceAreaWidth() != null) {
+			wb.attr("resourceAreaWidth", multiSchedule.getResourceAreaWidth());
+		}
+		if (multiSchedule.getResourceLabelText() != null) {
+			wb.attr("resourceLabelText", multiSchedule.getResourceLabelText());
+		}
+		wb.attr("resourcesInitiallyExpanded", multiSchedule.isResourcesInitiallyExpanded());
+		if (multiSchedule.getSlotWidth() != null) {
+			wb.attr("slotWidth", multiSchedule.getSlotWidth());
+		}
+		wb.append(",resources:").append(encodeKeys(context, multiSchedule));
 
 		Object initialDate = multiSchedule.getInitialDate();
 		if (initialDate != null) {

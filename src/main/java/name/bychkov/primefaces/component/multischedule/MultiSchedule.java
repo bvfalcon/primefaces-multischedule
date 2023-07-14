@@ -83,7 +83,14 @@ public class MultiSchedule extends UIComponentBase implements Widget, ClientBeha
 		slotEventOverlap,
 		urlTarget,
 		noOpener,
-		datesAboveResources
+		
+		datesAboveResources,
+		
+		resourceGroupField,
+		resourceAreaWidth,
+		resourceLabelText,
+		resourcesInitiallyExpanded,
+		slotWidth
 	}
 
 	public MultiSchedule() {
@@ -398,6 +405,47 @@ public class MultiSchedule extends UIComponentBase implements Widget, ClientBeha
 	public void setDatesAboveResources(boolean datesAboveResources) {
 		getStateHelper().put(PropertyKeys.datesAboveResources, datesAboveResources);
 	}
+
+	public String getResourceGroupField() {
+		return (String) getStateHelper().eval(PropertyKeys.resourceGroupField);
+	}
+
+	public void setResourceGroupField(String resourceGroupField) {
+		getStateHelper().put(PropertyKeys.resourceGroupField, resourceGroupField);
+	}
+
+	public String getResourceAreaWidth() {
+		return (String) getStateHelper().eval(PropertyKeys.resourceAreaWidth, "30%");
+	}
+
+	public void setResourceAreaWidth(String resourceAreaWidth) {
+		getStateHelper().put(PropertyKeys.resourceAreaWidth, resourceAreaWidth);
+	}
+
+	public String getResourceLabelText() {
+		return (String) getStateHelper().eval(PropertyKeys.resourceLabelText, "Resources");
+	}
+
+	public void setResourceLabelText(String resourceLabelText) {
+		getStateHelper().put(PropertyKeys.resourceLabelText, resourceLabelText);
+	}
+
+	public boolean isResourcesInitiallyExpanded() {
+		return (Boolean) getStateHelper().eval(PropertyKeys.resourcesInitiallyExpanded, true);
+	}
+
+	public void setResourcesInitiallyExpanded(boolean resourcesInitiallyExpanded) {
+		getStateHelper().put(PropertyKeys.resourcesInitiallyExpanded, resourcesInitiallyExpanded);
+	}
+
+	public Integer getSlotWidth() {
+		return (Integer) getStateHelper().eval(PropertyKeys.slotWidth);
+	}
+
+	public void setSlotWidth(Integer slotWidth) {
+		getStateHelper().put(PropertyKeys.slotWidth, slotWidth);
+	}
+
 
 	public static final String COMPONENT_TYPE = MultiSchedule.class.getName();
 
