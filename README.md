@@ -1,9 +1,9 @@
-# primefaces-multischedule
+# Primefaces MultiSchedule
 MultiSchedule component for Primefaces 12 Jakarta.
 
 In addition to standard Primefaces Schedule possibilities (Outlook Calendar, iCal), MultiSchedule enables to use Vertical Resource View and Timeline View - Premium possibilities of FullCalendar.
 
-**IMPORTANT**: Need to add [license key](https://fullcalendar.io/license) into `web.xml`:
+**Important**: Need to add [license key](https://fullcalendar.io/license) into `web.xml`:
 
 ```xml
 <context-param>
@@ -12,9 +12,12 @@ In addition to standard Primefaces Schedule possibilities (Outlook Calendar, iCa
 </context-param>
 ```
 
-![Component in Vertical Resource View](/timeline.png)
-Vertical Resource View
+## Examples
+**Vertical Resource View**
+![Component in Vertical Resource View mode](/timegrid.png)
 
-![Component in Timeline View](/timegrid.png)
-Timeline View
 
+**Timeline View**
+![Component in Timeline View mode](/timeline.png)
+
+Demo project can be found [hier](https://github.com/bvfalcon/primefaces-multischedule-example)
