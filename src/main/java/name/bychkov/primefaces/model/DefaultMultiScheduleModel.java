@@ -32,7 +32,7 @@ public class DefaultMultiScheduleModel extends DefaultScheduleModel implements M
 	@Override
 	public void addEvent(Object key, ScheduleEvent<?> event) {
 		event.setId(UUID.randomUUID().toString());
-		var lEvents = events.get(key);
+		List<ScheduleEvent<?>> lEvents = events.get(key);
 		if (lEvents == null) {
 			lEvents = events.put(key, new ArrayList<ScheduleEvent<?>>());
 		}
@@ -41,7 +41,7 @@ public class DefaultMultiScheduleModel extends DefaultScheduleModel implements M
 
 	@Override
 	public boolean deleteEvent(ScheduleEvent<?> event) {
-		var result = false;
+		boolean result = false;
 		for (List<ScheduleEvent<?>> lEvents : events.values()) {
 			result = result | lEvents.remove(event);
 		}
@@ -50,8 +50,8 @@ public class DefaultMultiScheduleModel extends DefaultScheduleModel implements M
 	
 	@Override
 	public List<ScheduleEvent<?>> getEvents() {
-		var result = new ArrayList<ScheduleEvent<?>>();
-		for (var lEvents : events.values()) {
+		List<ScheduleEvent<?>> result = new ArrayList<ScheduleEvent<?>>();
+		for (List<ScheduleEvent<?>> lEvents : events.values()) {
 			result.addAll(lEvents);
 		}
 		return result;
@@ -64,8 +64,8 @@ public class DefaultMultiScheduleModel extends DefaultScheduleModel implements M
 
 	@Override
 	public ScheduleEvent<?> getEvent(String id) {
-		for (var lEvents : events.values()) {
-			for (var event : lEvents) {
+		for (List<ScheduleEvent<?>> lEvents : events.values()) {
+			for (ScheduleEvent<?> event : lEvents) {
 				if (event.getId() != null && event.getId().equals(id)) {
 					return event;
 				}
@@ -77,9 +77,9 @@ public class DefaultMultiScheduleModel extends DefaultScheduleModel implements M
 	@Override
 	public void updateEvent(ScheduleEvent<?> event) {
 		Object key = null;
-		var index = -1;
+		int index = -1;
 
-		outer: for (var entry : events.entrySet()) {
+		outer: for (Map.Entry<Object, List<ScheduleEvent<?>>> entry : events.entrySet()) {
 			for (int i = 0; i < entry.getValue().size(); i++) {
 				if (entry.getValue() .get(i).getId().equals(event.getId())) {
 					key = entry.getKey();
@@ -97,8 +97,8 @@ public class DefaultMultiScheduleModel extends DefaultScheduleModel implements M
 	
 	@Override
 	public int getEventCount() {
-		var count = 0;
-		for (var lEvents : events.values()) {
+		int count = 0;
+		for (List<ScheduleEvent<?>> lEvents : events.values()) {
 			count += lEvents.size();
 		}
 		return count;

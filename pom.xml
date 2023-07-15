@@ -9,22 +9,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<yuicompressor-maven-plugin.version>1.5.1</yuicompressor-maven-plugin.version>
 		<maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+		<source.directory>${project.basedir}/src/main/java</source.directory>
 	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>jakarta.platform</groupId>
-			<artifactId>jakarta.jakartaee-api</artifactId>
-			<version>10.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.primefaces</groupId>
-			<artifactId>primefaces</artifactId>
-			<version>12.0.0</version>
-			<classifier>jakarta</classifier>
-		</dependency>
-	</dependencies>
 
 	<profiles>
 		<profile>
@@ -133,10 +119,128 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>java-ee</id>
+			<activation>
+				<property>
+					<name>env.JAVAEE</name>
+				</property>
+			</activation>
+			<properties>
+				<source.directory>${project.build.directory}/java-ee/src/main/java</source.directory>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>jakarta.platform</groupId>
+					<artifactId>jakarta.jakartaee-api</artifactId>
+					<version>8.0.0</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.primefaces</groupId>
+					<artifactId>primefaces</artifactId>
+					<version>12.0.0</version>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.google.code.maven-replacer-plugin</groupId>
+						<artifactId>maven-replacer-plugin</artifactId>
+						<version>1.4.1</version>
+						<executions>
+							<execution>
+								<id>replace jakarta->java</id>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>replace</goal>
+								</goals>
+								<configuration>
+									<basedir>${project.basedir}</basedir>
+									<outputDir>target/java-ee</outputDir>
+									<includes>
+										<include>src/main/java/**/*.java</include>
+									</includes>
+									<preserveDir>true</preserveDir>
+									<replacements>
+										<replacement>
+											<token>jakarta.xml.bind</token>
+											<value>javax.xml.bind</value>
+										</replacement>
+										<replacement>
+											<token>jakarta.annotation</token>
+											<value>javax.annotation</value>
+										</replacement>
+										<replacement>
+											<token>jakarta.xml.ws</token>
+											<value>javax.xml.ws</value>
+										</replacement>
+										<replacement>
+											<token>jakarta.jws</token>
+											<value>javax.jws</value>
+										</replacement>
+										<replacement>
+											<token>jakarta.faces</token>
+											<value>javax.faces</value>
+										</replacement>
+										<replacement>
+											<token>jakarta.el</token>
+											<value>javax.el</value>
+										</replacement>
+									</replacements>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.11.0</version>
+						<configuration>
+							<source>1.8</source>
+							<target>1.8</target>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>jakarta-ee</id>
+			<activation>
+				<property>
+					<name>!env.JAVAEE</name>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>jakarta.platform</groupId>
+					<artifactId>jakarta.jakartaee-api</artifactId>
+					<version>10.0.0</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.primefaces</groupId>
+					<artifactId>primefaces</artifactId>
+					<version>12.0.0</version>
+					<classifier>jakarta</classifier>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.11.0</version>
+						<configuration>
+							<release>11</release>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 	<build>
 		<defaultGoal>install</defaultGoal>
+		<sourceDirectory>${source.directory}</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -157,13 +261,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
-				<configuration>
-					<release>11</release>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.github.eirslett</groupId>

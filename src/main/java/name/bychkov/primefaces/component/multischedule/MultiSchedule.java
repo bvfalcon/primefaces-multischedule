@@ -1,5 +1,6 @@
 package name.bychkov.primefaces.component.multischedule;
 
+import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.context.FacesContext;
 
@@ -8,11 +9,13 @@ import java.util.Locale;
 import org.primefaces.component.schedule.Schedule;
 import org.primefaces.util.LocaleUtils;
 
-@ResourceDependency(library = "primefaces", name = "multischedule/multischedule.css")
-@ResourceDependency(library = "primefaces", name = "components.css")
-@ResourceDependency(library = "primefaces", name = "core.js")
-@ResourceDependency(library = "primefaces", name = "components.js")
-@ResourceDependency(library = "primefaces", name = "multischedule/multischedule.js")
+@ResourceDependencies({
+	@ResourceDependency(library = "primefaces", name = "multischedule/multischedule.css"),
+	@ResourceDependency(library = "primefaces", name = "components.css"),
+	@ResourceDependency(library = "primefaces", name = "core.js"),
+	@ResourceDependency(library = "primefaces", name = "components.js"),
+	@ResourceDependency(library = "primefaces", name = "multischedule/multischedule.js")
+})
 public class MultiSchedule extends Schedule {
 
 	public static final String COMPONENT_FAMILY = "org.primefaces.component";
