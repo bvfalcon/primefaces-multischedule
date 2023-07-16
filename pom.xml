@@ -9,7 +9,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<yuicompressor-maven-plugin.version>1.5.1</yuicompressor-maven-plugin.version>
 		<maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+		<maven-install-plugin.version>3.1.1</maven-install-plugin.version>
+		<maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
 		<source.directory>${project.basedir}/src/main/java</source.directory>
+		<deploy.repository.id>primefaces-multischedule</deploy.repository.id>
+		<deploy.repository.url>https://maven.pkg.github.com/bvfalcon/primefaces-multischedule</deploy.repository.url>
 	</properties>
 
 	<profiles>
@@ -233,6 +237,68 @@
 							<release>11</release>
 						</configuration>
 					</plugin>
+					<plugin>
+						<artifactId>maven-install-plugin</artifactId>
+						<version>${maven-install-plugin.version}</version>
+						<configuration>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>${project.artifactId}</artifactId>
+							<version>${project.version}</version>
+							<packaging>jar</packaging>
+							<pomFile>pom.xml</pomFile>
+						</configuration>
+						<executions>
+							<execution>
+								<id>default-install</id>
+								<configuration>
+									<skip>true</skip>
+								</configuration>
+							</execution>
+							<execution>
+								<id>install-jakarta-classifier</id>
+								<phase>install</phase>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+								<configuration>
+									<classifier>jakarta</classifier>
+									<file>${project.build.directory}/${project.build.finalName}.jar</file>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<version>${maven-deploy-plugin.version}</version>
+						<configuration>
+							<repositoryId>${deploy.repository.id}</repositoryId>
+							<url>${deploy.repository.url}</url>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>${project.artifactId}</artifactId>
+							<version>${project.version}</version>
+							<packaging>jar</packaging>
+							<pomFile>pom.xml</pomFile>
+						</configuration>
+						<executions>
+							<execution>
+								<id>default-deploy</id>
+								<configuration>
+									<skip>true</skip>
+								</configuration>
+							</execution>
+							<execution>
+								<id>deploy-jakarta-classifier</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>deploy-file</goal>
+								</goals>
+								<configuration>
+									<classifier>jakarta</classifier>
+									<file>${project.build.directory}/${project.build.finalName}.jar</file>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -307,8 +373,8 @@
 
 	<distributionManagement>
 		<repository>
-			<id>primefaces-multischedule</id>
-			<url>https://maven.pkg.github.com/bvfalcon/primefaces-multischedule</url>
+			<id>${deploy.repository.id}</id>
+			<url>${deploy.repository.url}</url>
 		</repository>
 	</distributionManagement>
 
