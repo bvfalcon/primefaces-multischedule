@@ -7,7 +7,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<yuicompressor-maven-plugin.version>1.5.1</yuicompressor-maven-plugin.version>
 		<maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
 		<maven-install-plugin.version>3.1.1</maven-install-plugin.version>
 		<maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
@@ -205,45 +204,47 @@
 		<sourceDirectory>${source.directory}</sourceDirectory>
 		<plugins>
 			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>yuicompressor-maven-plugin</artifactId>
-				<version>${yuicompressor-maven-plugin.version}</version>
+				<groupId>org.primefaces.extensions</groupId>
+				<artifactId>resources-optimizer-maven-plugin</artifactId>
+				<version>2.6.0</version>
 				<executions>
 					<execution>
+						<id>compress</id>
 						<goals>
-							<goal>compress</goal>
+							<goal>optimize</goal>
 						</goals>
+						<configuration>
+							<languageIn>ECMASCRIPT_2015</languageIn>
+							<inputDir>${project.build.directory}</inputDir>
+							<resourcesSets>
+								<resourcesSet>
+									<compilationLevel>WHITESPACE_ONLY</compilationLevel>
+									<includes>
+										<include>classes/META-INF/resources/primefaces/multischedule/1-multischedule.js</include>
+										<include>fullcalendar.min.js</include>
+									</includes>
+									<aggregations>
+										<aggregation>
+											<removeIncluded>true</removeIncluded>
+											<outputFile>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/multischedule.js</outputFile>
+										</aggregation>
+									</aggregations>
+								</resourcesSet>
+								<resourcesSet>
+									<includes>
+										<include>fullcalendar.min.css</include>
+									</includes>
+									<aggregations>
+										<aggregation>
+											<removeIncluded>true</removeIncluded>
+											<outputFile>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/multischedule.css</outputFile>
+										</aggregation>
+									</aggregations>
+								</resourcesSet>
+							</resourcesSets>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<nosuffix>true</nosuffix>
-					<linebreakpos>-1</linebreakpos>
-					<excludes>
-						<exclude>**/*.js</exclude>
-						<exclude>**/*.css</exclude>
-					</excludes>
-					<aggregations>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<removeIncluded>true</removeIncluded>
-							<inputDir>${project.build.directory}</inputDir>
-							<output>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/multischedule.js</output>
-							<includes>
-								<include>classes/META-INF/resources/primefaces/multischedule/1-multischedule.js</include>
-								<include>fullcalendar.min.js</include>
-							</includes>
-						</aggregation>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<removeIncluded>true</removeIncluded>
-							<output>${project.build.directory}/classes/META-INF/resources/primefaces/multischedule/multischedule.css</output>
-							<inputDir>${project.build.directory}</inputDir>
-							<includes>
-								<include>fullcalendar.min.css</include>
-							</includes>
-						</aggregation>
-					</aggregations>
-				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
